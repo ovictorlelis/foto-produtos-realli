@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex">
+  <link rel="icon" type="image/x-icon" href="icon.svg">
+  <link rel="manifest" href="/manifest.json">
+
+  <title>Foto Produtos - Realli</title>
+
+  <style>
+    body {
+      margin: 30px auto;
+      max-width: 700px;
+      text-align: center;
+      padding: 15px;
+    }
+
+    .code {
+      padding: 12px;
+    }
+
+    .btn {
+      padding: 12px;
+    }
+
+    .product {
+      margin-top: 30px;
+    }
+
+    .product img {
+      max-width: 100%;
+      height: 500px;
+      object-fit: contain;
+    }
+  </style>
+</head>
+
+<body>
+
+  <form class="form" onsubmit="produtos()">
+    <input class="code" id="value" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" type="number" maxlength="4" placeholder="Código" required>
+    <input class="btn" type="submit" value="Visualizar">
+  </form>
+
+  <div class="product">
+    <p id="text"></p>
+    <img id="image" src="">
+  </div>
+
+  <script>
+    function registerServiceWorker() {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js', { scope: '/' }).then(() => {
+          console.log('Service Worker registrado com sucesso.');
+        }).catch(error => {
+          console.log('Service Worker falhou:', error);
+        });
+      }
+    }
+
+    function produtos() {
+      event.preventDefault()
+      let value = document.getElementById("value").value
+      let image = document.getElementById("image")
+      let text = document.getElementById("text");
+
+      let file = "./produtos/" + value + ".jpeg";
+
+      document.activeElement.blur();
+      image.src = '';
+      text.innerText = "Carregando..."
+
+      fetch(file, {
+        headers: {
+          'Cache-Control': 'no-cache'
+        }
+      }).then(response => {
+        if (response.ok) {
+          image.src = response.url
+          text.innerText = ""
+        } else {
+          text.innerText = "Código inválido ou foto não cadastrada"
+        }
+      })
+        .catch();
+    }
+  </script>
+</body>
+
+</html>
